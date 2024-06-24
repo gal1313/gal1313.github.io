@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 id="scoreId">score: </h1>
+    <img src="jisoo.png" alt="" id="player">
+    <img src="wonyoung.png" alt="" id="enemy">
+    <div id="floor"></div>
+<script>
+    addEventListener('keydown',checkKey)
+    let player = document.getElementById("player")
+    let enemy = document.getElementById("enemy")
+    let scoreId = document.getElementById("scoreId")
+    let score = 0 ;
+    let isJumping = false;  
+    let cheackInterval = setInterval(cheack,100)
+function checkKey(event){
+    if (event.key === ' '){
+        jump()
+    }
+}
+function jump(){
+    if(isJumping){
+        return // תצא מהופנקציה ולא תבצע קפיצה 
+    }
+    isJumping = true
+    player.classList.add('jump');
+    setTimeout(removeAnimation, 1000)     
+    let soundJump = new Audio('jump.wav') // מוסיפים צליל של קפיצה 
+    soundJump.play()
+}
+function removeAnimation(){
+    player.classList.remove('jump')
+    isJumping = false;
+    score++
+    scoreId.innerHTML = "score :  " + score
+}
+function cheack(){
+    if(elementsOverlap(player,enemy)){
+        clearInterval(cheackInterval)
+        let best = localStorage.getItem("best")
+        if(!best || best < score){
+        localStorage.setItem('best',score)
+        best = score
+        
+        }
+              document.body.innerHTML = `
+        <p id="overId"> Game over ! </p>
+        <p id="result">  your score is : ${score} ! </p> 
+        <p id="best"> your best score is : ${best} </p> 
+        
+        ` 
+    }
+
+
+
+
+    function elementsOverlap(el1, el2) {
+    const domRect1 = el1.getBoundingClientRect() // מקבל את הגבולות של האלמנט הראשון
+    const domRect2 = el2.getBoundingClientRect() // מקבל את הגבולות של האלמנט השני
+
+
+    return !( // מחזיר אמת אם האלמנטים חופפים, אחרת שקר
+        domRect1.top > domRect2.bottom || // אם החלק העליון של האלמנט הראשון נמוך מהחלק התחתון של האלמנט השני
+        domRect1.right < domRect2.left || // אם החלק הימני של האלמנט הראשון שמאלה מהחלק השמאלי של האלמנט השני
+        domRect1.bottom < domRect2.top || // אם החלק התחתון של האלמנט הראשון גבוה מהחלק העליון של האלמנט השני
+        domRect1.left > domRect2.right // אם החלק השמאלי של האלמנט הראשון ימינה מהחלק הימני של האלמנט השני
+    )
+    }
+}
+</script>
+    
+</body>
+</html>
