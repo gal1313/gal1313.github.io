@@ -1,1 +1,0 @@
-# gal1313.github.io
